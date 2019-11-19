@@ -5,10 +5,9 @@
     <meta charset="utf-8" />
 
     <title>Superfund</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
 
     <style>
       body {
@@ -32,6 +31,8 @@
     <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.0.6/chroma.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 
     <script>
       // create Leaflet map, centered on Texas
@@ -51,57 +52,76 @@
         }
       ).addTo(map);
 
+      L.Control.geocoder({
+          collapsed: false
+      }).addTo(map);
+
+
+      const proximityHexgrid = d3.json('data/superfund-proximity-hexgrid.json');
+      const superfundHexgrid = d3.json('data/superfund-hexgrid.json');
+      const siteData = d3.json('data/superfund-sites.json');
+
+      Promise.all([proximityHexgrid, superfundHexgrid, siteData]).then(dataReady)
+
+      function dataReady(data) {
+
+        const proximity = data[0];
+        const superfunds = data[1];
+        const sites = data[2];
+
       // request our js file
-      d3.json("data/superfund-proximity-hexgrid.json").then(function(data) {
+    //   d3.json("data/superfund-proximity-hexgrid.json").then(function(data) {
+
 
         const counts = []
 
-        data.features.forEach(function(feature) {
+        proximity.features.forEach(function(feature) {
             if (feature.properties.averageDistance > 0) {
                 counts.push(feature.properties.averageDistance);
             }
         });
 
-        drawMap(data, counts);
-      });
+        drawMap(proximity, counts);
 
-      function drawMap(data, counts) {
+        function drawMap(proximity, counts) {
 
-        console.log(data);
-        
-        const breaks = chroma.limits(counts, 'k', 9);
+            console.log(proximity);
+            
+            const breaks = chroma.limits(counts, 'k', 9);
 
-        console.log(breaks)
+            console.log(breaks)
 
-        const colorize = chroma
-                        .scale('YlGn')
-                        .domain(breaks)
-                        // .domain([1,0])
-                        .mode('lch')
-                        .correctLightness();
-        // map options
-        var options = {
-          // style the hexagons
-          style: function(feature, layer) {
-            return {
-              color: "white",
-              weight: 2,
-              fillColor: colorize(feature.properties.averageDistance),
-              fillOpacity: 1
+            const colorize = chroma
+                            .scale('YlGn')
+                            .domain(breaks)
+                            // .domain([1,0])
+                            .mode('lch')
+                            .correctLightness();
+            // map options
+            var options = {
+            // style the hexagons
+            style: function(feature, layer) {
+                return {
+                color: "white",
+                weight: 2,
+                fillColor: colorize(feature.properties.averageDistance),
+                fillOpacity: 1
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                // attach a tooltip to each
+                layer.bindTooltip("People living here live an average " + (feature.properties.averageDistance).toFixed(2) + " miles from a Superfund site.");
+            },
+            filter: function(feature) {
+                if (feature.properties.averageDistance) return feature;
+            }
             };
-          },
-          onEachFeature: function(feature, layer) {
-            // attach a tooltip to each
-            layer.bindTooltip("People living here live an average " + (feature.properties.averageDistance).toFixed(2) + " miles from a Superfund site.");
-          },
-          filter: function(feature) {
-            if (feature.properties.averageDistance) return feature;
-          }
-        };
 
-        // create the Leaflet map using the hexgrid geojson data
-        L.geoJSON(data, options).addTo(map);
+            // create the Leaflet map using the hexgrid geojson data
+            L.geoJSON(proximity, options).addTo(map);
+        }
       }
+    
     </script>
   </body>
 </html>
