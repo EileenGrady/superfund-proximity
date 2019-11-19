@@ -7,7 +7,7 @@ const average = require('average');
 // shortcuts to in and out files, change these accordingly
 inFirstFile = __dirname + "/../data/populated-places.json"
 inSecondFile = __dirname + "/../data/superfund-sites.json"
-outFilePath = __dirname + "/../data/superfund-proximity-hexgrid.json"
+outFilePath = __dirname + "/../data/hexgrid.json"
 
 // first read in populated places
 fs.readFile(inFirstFile, "utf8", (err, popPlacesData) => {
@@ -66,34 +66,50 @@ const calculateNearestSite = (popPlaces, superfunds, hexgrid) => {
 
     })
 
-    collectPlaces(popPlaces, hexgrid)
+    collectPlaces(popPlaces, superfunds, hexgrid)
 }
 
-const collectPlaces = (popPlaces, hexgrid) => {
+
+
+const collectPlaces = (popPlaces, superfunds, hexgrid) => {
     let options = {
         ignoreBoundary: true
     };
 
+    let averageCount;
     let count;
 
     turf.featureEach(hexgrid, (hex, i) => {
-        count = []
+        averageCount = []
+        count = 0
 
         turf.featureEach(popPlaces, point => {
             if (turf.booleanPointInPolygon(point, hex, options)) {
-                count.push(point.properties.distanceTo)
+                averageCount.push(point.properties.distanceTo)
             }
         })
-        var averageDistance = average(count)
+        var averageDistance = average(averageCount)
 
         if (averageDistance > 0) {
             console.log(chalk.magenta("hex # " + i + ": " + averageDistance))
         }
 
+        turf.featureEach(superfunds, point => {
+            if(turf.booleanPointInPolygon(point, hex, options)) {
+                count++
+            }
+        })
+
+        if (count > 0) {
+            console.log(chalk.green("adding " + count + " superfunds to hex #" + i))
+        }
+
         hex.properties = Object.assign({}, hex.properties, {
+            superfundCount: count,
             averageDistance: averageDistance
         });
     })
+
 
     console.log(chalk.blue("ready to write the hexgrid to file"));
     
