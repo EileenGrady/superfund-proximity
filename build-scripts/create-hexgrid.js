@@ -93,8 +93,6 @@ const collectPlaces = (popPlaces, hexgrid) => {
         hex.properties = Object.assign({}, hex.properties, {
             averageDistance: averageDistance
         });
-
-        console.log(hex.properties.averageDistance)
     })
 
     console.log(chalk.blue("ready to write the hexgrid to file"));

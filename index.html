@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Superfund</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    />
+
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.0.6/chroma.min.js"></script>
+
+    <script>
+      // create Leaflet map, centered on Texas
+      var map = L.map("map", {
+        zoomSnap: 0.1,
+        center: [40.33077, -99.5182],
+        zoom: 4.2
+      });
+
+      // add a basemap of tiles
+      L.tileLayer(
+        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
+        {
+          maxZoom: 18,
+          attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+        }
+      ).addTo(map);
+
+      // request our js file
+      d3.json("data/superfund-proximity-hexgrid.json").then(function(data) {
+
+        const counts = []
+
+        data.features.forEach(function(feature) {
+            if (feature.properties.averageDistance > 0) {
+                counts.push(feature.properties.averageDistance);
+            }
+        });
+
+        drawMap(data, counts);
+      });
+
+      function drawMap(data, counts) {
+
+        console.log(data);
+        
+        const breaks = chroma.limits(counts, 'k', 9);
+
+        console.log(breaks)
+
+        const colorize = chroma
+                        .scale('YlGn')
+                        .domain(breaks)
+                        // .domain([1,0])
+                        .mode('lch')
+                        .correctLightness();
+        // map options
+        var options = {
+          // style the hexagons
+          style: function(feature, layer) {
+            return {
+              color: "white",
+              weight: 2,
+              fillColor: colorize(feature.properties.averageDistance),
+              fillOpacity: 1
+            };
+          },
+          onEachFeature: function(feature, layer) {
+            // attach a tooltip to each
+            layer.bindTooltip("People living here live an average " + (feature.properties.averageDistance).toFixed(2) + " miles from a Superfund site.");
+          },
+          filter: function(feature) {
+            if (feature.properties.averageDistance) return feature;
+          }
+        };
+
+        // create the Leaflet map using the hexgrid geojson data
+        L.geoJSON(data, options).addTo(map);
+      }
+    </script>
+  </body>
+</html>
