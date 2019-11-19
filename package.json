@@ -18,6 +18,7 @@
   "homepage": "https://github.com/newmapsplus/map675-module-03-collaborative#readme",
   "dependencies": {
     "@turf/turf": "^5.1.6",
+    "average": "^0.1.0",
     "chalk": "^3.0.0",
     "csvtojson": "^2.0.10",
     "geojson-validation": "^0.2.1"
