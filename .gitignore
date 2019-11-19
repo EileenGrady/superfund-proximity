@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+
+# Large files
+project-files/NationalFile_20191101.txt

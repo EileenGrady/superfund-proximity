@@ -1,0 +1,25 @@
+{
+  "name": "map675-module-03-collaborative-superfund",
+  "version": "1.0.0",
+  "description": "This repository holds an experimental assignment for collaborative data wrangling with Turf.js (and various other JS/npm packages and command line tools) within a Node environment and quick web mapping solutions for plotting the resultant data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newmapsplus/map675-module-03-collaborative.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/newmapsplus/map675-module-03-collaborative/issues"
+  },
+  "homepage": "https://github.com/newmapsplus/map675-module-03-collaborative#readme",
+  "dependencies": {
+    "@turf/turf": "^5.1.6",
+    "chalk": "^3.0.0",
+    "csvtojson": "^2.0.10",
+    "geojson-validation": "^0.2.1"
+  }
+}
