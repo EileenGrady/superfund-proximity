@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
 
-    <title>Superfund</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Superfund Proximity</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
-
-    <style>
+  <style>
       body {
         font-family: sans-serif;
         margin: 0;
@@ -17,47 +18,27 @@
       }
 
       #map {
-        position: absolute;
-        width: 100%;
-        top: 0;
-        bottom: 0;
+      height: 540px;
+    }
+
+      h2, h3, ul, li {
+          font-family: 'Century Gothic';
       }
 
-      #title {
-        position: absolute;
-        margin: 10px;
-        top: 10px;
-        left: 10px;
-        color: #555;
-        padding: 10px 15px;
-        font: 24px 'Century Gothic';
-        font-weight: bold;
-        background: white;
-        background: rgba(255,255,255,0.8);
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        border-radius: 5px;
-        border: 2px solid rgba(0,0,0,0.2);
-        z-index: 1000;
-	  }
+      p {
+          font-family: 'Century Gothic';
+          font-size: 14px;
+      }
 
-      #about {
-        position: absolute;
-        margin: 10px;
-        top: 70px;
-        left: 10px;
-        width: 240px;
-        height: 500px;
-        color: #555;
-        padding: 10px 15px;
-        font: 12px 'Century Gothic';
-        font-weight: bold;
-        background: white;
-        background: rgba(255,255,255,0.8);
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        border-radius: 5px;
-        border: 2px solid rgba(0,0,0,0.2);
-        z-index: 1000;
-	  }
+      a {
+          color: #FF6347;
+      }
+
+      a:hover {
+          color: #9AC0CD;
+      }
+    
+
 
       .legend {
         color: #555;
@@ -69,13 +50,14 @@
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
         border: 2px solid rgba(0,0,0,0.2);
         border-radius: 5px;
-        width: 280px;
+        width: 265px;
 	  }
 
-    .legend h3 {
+    .legend p {
         color: #555;
-        font: 12px, 'Century Gothic';
-        margin: 6px, 6px;
+        font-size: 12px;
+        font-family: 'Century Gothic';
+        margin-bottom: 6px;
     }
 
 	  .legend ul {
@@ -87,8 +69,8 @@
 
 	  .legend li {
         display: inline-block;
-        width: 40px;
-        height: 32px;
+        width: 35px;
+        height: 27px;
 	  }
 
 	  .legend .min {
@@ -99,40 +81,89 @@
 	  .legend .max {
 			  float: right;
 	  }
-      
-    </style>
-  </head>
-
-  <body>
-    <div id="map"></div>
-
-    <div id="title">How close do you live to toxic Superfund Sites?</div>
-
-    <div id="about">
-        <p>Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
-        left out in the open, or otherwise improperly managed. These sites include manufacturing facilities, 
-        processing plants, landfills and mining sites. Superfund sites are such sites that have been designated
-        under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980.</p>
-        <p>The map to the shows average distances from a populated place to a Superfund site. A populated place
-            is any place or area with clustered or scattered buildings and a permanent human population.
-        </p>
-        <p>Search any place in the search bar to find the closest Superfund site.</p>
-    </div>
-
-    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.0.6/chroma.min.js"></script>
-    <script src="../dist/choropleth.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-    <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
 
 
+    /* Small devices (landscape phones, 576px and up) */
+    @media (min-width: 576px) {}
 
-    <script>
-      // create Leaflet map, centered on Texas
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) {
+
+      aside {
+        height: 540px;
+      }
+    }
+
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px) {}
+
+    /* Extra large devices (large desktops, 1200px and up) */
+    @media (min-width: 1200px) {}
+  </style>
+</head>
+
+<body class="bg-dark">
+
+  <div class="container-fluid">
+    <header class="row text-white py-3">
+      <div class="col-lg">
+        <h2 class="">How close do you live to a toxic Superfund Site?</h2>
+      </div>
+    </header>
+
+    <section class="row">
+      <aside id="about" class="col-12 col-md-4 col-lg-3 text-white py-2 bg-secondary overflow-auto">
+        <section>
+          <h3>About this map</h3>
+          <p>Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
+            left out in the open, or otherwise improperly managed. These sites include manufacturing facilities, 
+            processing plants, landfills and mining sites. Superfund sites are such sites that have been designated
+            under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980.</p>
+            <p>The map to the shows average distances from a populated place to a Superfund site. A populated place
+                is any place or area with clustered or scattered buildings and a permanent human population.
+            </p>
+            <p>Search any place in the search bar to find the closest Superfund site.</p>
+        </section>
+      </aside>
+      <div class="col-12 col-md-8 col-lg-9 px-0">
+        <div id="map"></div>
+      </div>
+    </section>
+    <footer class="row text-white py-3">
+      <div class="col mx-2">
+        <ul class="list-unstyled">
+          <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a></li>
+          <li>November 2019</li>
+          <li>Data Sources: <a href="usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
+        and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a>.</li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+  <script src="../dist/choropleth.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+
+
+  <script>
+      // create Leaflet map
       var map = L.map("map", {
         zoomSnap: 0.1,
-        center: [39.09383921639812, -102.91221476916441],
+        center: [37.46020040160267, -92.39186355005504],
         zoom: 4.2,
         zoomControl: false
       });
@@ -206,7 +237,7 @@
                 var colors = hexgridLayerGroup.options.colors
                 var labels = []
 
-                div.innerHTML = '<h3>Average distance between a Superfund site and a populated place</h3>'
+                div.innerHTML = '<p>Average distance between a Superfund site and a populated place</p>'
 
                 // Add min & max
                 div.innerHTML += '<div class="labels"><div class="min">' + limits[0].toFixed(2) + ' miles</div> \
@@ -255,7 +286,7 @@
         }
         
       }
-    
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
