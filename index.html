@@ -9,6 +9,8 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css"> />
+  <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css"> />
 
   <style>
       body {
@@ -118,7 +120,7 @@
   <div class="container-fluid">
     <header class="row text-white py-3">
       <div class="col-lg">
-        <h2 class="">How close do you live to a toxic Superfund Site?</h2>
+        <h2 class="">How close do you live to a toxic Superfund site?</h2>
       </div>
     </header>
 
@@ -133,8 +135,8 @@
             under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980 (<a href="https://www.epa.gov/superfund/what-superfund" target="_blank">EPA.gov</a>)
           </p>
             <p>
-              The map to the shows Superfund sites and average distances from a populated place to a Superfund site. A populated place
-                is any place or area with clustered or scattered buildings and a permanent human population.
+              This map shows Superfund sites and average distances from populated places to a Superfund site. A populated place is defined as, 
+                "any place or area with clustered or scattered buildings and a permanent human population."
             </p>
             <p>
               Toggle Superfund sites on and off, or search any place in the search bar to find the closest Superfund site.
@@ -173,12 +175,14 @@
   <script src="../dist/choropleth.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+  <script src="libs/Leaflet.markercluster/leaflet.markercluster.js"></script>
+
 
 
   <script>
       // create Leaflet map
       var map = L.map("map", {
-        zoomSnap: 0.1,
+        // zoomSnap: 0.1,
         center: [37.46020040160267, -92.39186355005504],
         zoom: 4.2,
         zoomControl: false
@@ -230,7 +234,9 @@
             },
             onEachFeature: function(feature, layer) {
                     // attach a tooltip to each
-                    layer.bindTooltip("People in this area live an average <span style='font-weight:bold'>" + (feature.properties.averageDistance).toFixed(2) + "</span> miles from a Superfund site.");
+                    layer.bindTooltip("People in this area live an average <span style='font-weight:bold'>" + (feature.properties.averageDistance).toFixed(2) + "</span> miles from a Superfund site.", {
+                      sticky: true
+                    });
 
                     layer.on('mouseover', function() {
                         this.setStyle({
@@ -254,23 +260,46 @@
                 },
             }).addTo(map);
 
-            const superfundLayerGroup = L.geoJSON(superfunds, {
-              pointToLayer: function(feature, latlng) {
-                    var superfundIcon = L.icon({
-                        iconUrl: 'icons/toxic-sign.svg',
-                        iconSize: [10, 10],
-                        popuptipAnchor: [25, -25],
-                    });
-                    return L.marker(latlng, {icon: superfundIcon});
-              },
-              onEachFeature: function(feature, layer) {
-                    // attach a popup to each
-                    layer.bindPopup(feature.properties.FEATURE_NAME);
-              }
-            }).addTo(map);
+            // const superfundLayerGroup = L.geoJSON(superfunds, {
+            //   pointToLayer: function(feature, latlng) {
+            //         var superfundIcon = L.icon({
+            //             iconUrl: 'icons/toxic-sign.svg',
+            //             iconSize: [10, 10]
+            //         });
+            //         return L.marker(latlng, {icon: superfundIcon});
+            //   },
+            //   // onEachFeature: function(feature, layer) {
+            //   //       // attach a popup to each
+            //   //       layer.bindPopup(feature.properties.FEATURE_NAME, {
+            //   //         popupOffset: [75, -75]
+            //   //       });
+            //   // }
+            // }).addTo(map);
+
+            // create new markerClusterGroup
+            var markers = L.markerClusterGroup();
+
+            // loop through all superfunds
+            superfunds.features.forEach(function(feature) {
+              // create a new Leaflet marker for each
+              var coords = feature.geometry.coordinates;
+              var superfundIcon = L.icon({
+                iconUrl: 'icons/toxic-sign.svg',
+                iconSize: [15, 15]
+              });
+              marker = L.marker([coords[1], coords[0]], {icon: superfundIcon});
+              // bind a tooltip to the marker
+              marker.bindTooltip("Superfund Site: " + feature.properties.FEATURE_NAME, {
+                sticky: true
+              });          
+              markers.addLayer(marker);
+
+            });
+            // add the markerClusterGroup to the map
+            map.addLayer(markers);
 
             var layerControl = {
-                "Superfund Sites": superfundLayerGroup
+                "Superfund Sites": markers
             };
 
             L.control.layers(null, layerControl, {
