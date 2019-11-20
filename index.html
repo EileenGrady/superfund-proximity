@@ -168,6 +168,8 @@
         zoomControl: false
       });
 
+      map.setMaxBounds(map.getBounds());
+
       // add a basemap of tiles
       L.tileLayer(
         "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
@@ -221,6 +223,10 @@
                         })
                     });
 
+                    layer.on('click', function() {
+                      map.flyToBounds(layer.getBounds())
+                    });
+
                     layer.on('mouseout', function() {
                         this.setStyle({
                             fillOpacity: 0.8,
@@ -228,6 +234,17 @@
                         })
                     })
                 },
+            }).addTo(map);
+
+            const superfundLayerGroup = L.geoJSON(superfunds, {
+              pointToLayer: function(feature, latlng) {
+                    var superfundIcon = L.icon({
+                        iconUrl: 'icons/toxic-sign.svg',
+                        iconSize: [10, 10],
+                        popuptipAnchor: [25, -25],
+                    });
+                    return L.marker(latlng, {icon: superfundIcon});
+              },
             }).addTo(map);
 
             var legend = L.control({ position: 'bottomright' })
@@ -264,6 +281,8 @@
                     map.removeLayer(superfundMarker);
                 };
 
+                console.log(result.geocode.name)
+
                 var targetPoint = [result.geocode.center.lng, result.geocode.center.lat]
         
                 let nearestSuperfund = turf.nearestPoint(targetPoint, superfunds)
@@ -272,9 +291,20 @@
 
                 let distance = turf.distance(targetPoint, nearestSuperfund, options)
 
-                superfundMarker = L.geoJson(nearestSuperfund).addTo(map);
+                superfundMarker = L.geoJson(nearestSuperfund, {
+                  pointToLayer: function(feature, latlng) {
+                    var superfundIcon = L.icon({
+                        iconUrl: 'icons/toxic-sign.svg',
+                        iconSize: [50, 50],
+                        tooltipAnchor: [25, -25]
+                    });
+                    return L.marker(latlng, {icon: superfundIcon});
+                  }
+                }).addTo(map);
 
-                superfundMarker.bindTooltip(nearestSuperfund.properties.Name + " is " + distance.toFixed(2) + " miles away.").openTooltip();
+                superfundMarker.bindTooltip(nearestSuperfund.properties.Name + " is " + distance.toFixed(2) + " miles away.", {
+                  direction: 'top'
+                }).openTooltip();
 
 
                 bounds = L.latLngBounds(superfundMarker.getBounds().extend(result.geocode.bbox))
