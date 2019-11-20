@@ -31,7 +31,7 @@
       }
 
       a {
-          color: #FF6347;
+          color: #F18772;
       }
 
       a:hover {
@@ -82,6 +82,17 @@
 			  float: right;
 	  }
 
+    .leaflet-popup, .leaflet-tooltip {
+      font-family: 'Century Gothic';
+      margin: 3px 0;
+      width: 150px;
+      white-space: pre-wrap;
+      border-radius: 5px;
+
+    }
+
+
+
 
     /* Small devices (landscape phones, 576px and up) */
     @media (min-width: 576px) {}
@@ -115,14 +126,19 @@
       <aside id="about" class="col-12 col-md-4 col-lg-3 text-white py-2 bg-secondary overflow-auto">
         <section>
           <h3>About this map</h3>
-          <p>Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
+          <p>
+            Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
             left out in the open, or otherwise improperly managed. These sites include manufacturing facilities, 
             processing plants, landfills and mining sites. Superfund sites are such sites that have been designated
-            under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980.</p>
-            <p>The map to the shows average distances from a populated place to a Superfund site. A populated place
+            under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980 (<a href="https://www.epa.gov/superfund/what-superfund" target="_blank">EPA.gov</a>)
+          </p>
+            <p>
+              The map to the shows Superfund sites and average distances from a populated place to a Superfund site. A populated place
                 is any place or area with clustered or scattered buildings and a permanent human population.
             </p>
-            <p>Search any place in the search bar to find the closest Superfund site.</p>
+            <p>
+              Toggle Superfund sites on and off, or search any place in the search bar to find the closest Superfund site.
+            </p>
         </section>
       </aside>
       <div class="col-12 col-md-8 col-lg-9 px-0">
@@ -132,10 +148,10 @@
     <footer class="row text-white py-3">
       <div class="col mx-2">
         <ul class="list-unstyled">
-          <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a></li>
-          <li>November 2019</li>
-          <li>Data Sources: <a href="usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
-        and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a>.</li>
+          <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a>, November 2019</li>
+          <li>Data Sources: <a href="https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
+        and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a></li>
+          <li>Superfund site icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></li></li>
         </ul>
       </div>
     </footer>
@@ -207,14 +223,14 @@
             style: {
                 color: '#4D4D4D',
                 weight: 1,
-                fillOpacity: 0.8
+                fillOpacity: 0.9
             },
             filter: function(feature) {
                     if (feature.properties.averageDistance) return feature;
             },
             onEachFeature: function(feature, layer) {
                     // attach a tooltip to each
-                    layer.bindTooltip("People in this area live an average " + (feature.properties.averageDistance).toFixed(2) + " miles from a Superfund site.");
+                    layer.bindTooltip("People in this area live an average <span style='font-weight:bold'>" + (feature.properties.averageDistance).toFixed(2) + "</span> miles from a Superfund site.");
 
                     layer.on('mouseover', function() {
                         this.setStyle({
@@ -247,6 +263,18 @@
                     });
                     return L.marker(latlng, {icon: superfundIcon});
               },
+              onEachFeature: function(feature, layer) {
+                    // attach a popup to each
+                    layer.bindPopup(feature.properties.FEATURE_NAME);
+              }
+            }).addTo(map);
+
+            var layerControl = {
+                "Superfund Sites": superfundLayerGroup
+            };
+
+            L.control.layers(null, layerControl, {
+              collapsed: false
             }).addTo(map);
 
             var legend = L.control({ position: 'bottomright' })
@@ -302,7 +330,7 @@
                   }
                 }).addTo(map);
 
-                superfundMarker.bindTooltip(nearestSuperfund.properties.Name + " is " + distance.toFixed(2) + " miles away.", {
+                superfundMarker.bindTooltip(nearestSuperfund.properties.FEATURE_NAME + " is <span style='font-weight:bold'>" + distance.toFixed(2) + "</span> miles away.", {
                   direction: 'top'
                 }).openTooltip();
 
