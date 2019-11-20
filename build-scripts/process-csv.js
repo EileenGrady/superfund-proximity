@@ -27,16 +27,15 @@ csv({
         let featureCount = 0;
     
         jsonObj.forEach(obj => {
-            // if statement to exclude null values
-            if (obj.Latitude) {
+            if (obj.Longitude) {
                 feature = {
                     type: "Feature",
                     geometry: {
                         type: "Point",
-                        coordinates: [+obj.Latitude, +obj.Longitude]
+                        coordinates: [+obj.Longitude, +obj.Latitude]
                     },
                     properties: {
-                        SITE_NAME: obj.Name
+                        FEATURE_NAME: obj.Name
                     }
                 };
                 geojson.features.push(feature);

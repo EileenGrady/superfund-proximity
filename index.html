@@ -224,7 +224,9 @@
                     });
 
                     layer.on('click', function() {
-                      map.flyToBounds(layer.getBounds())
+                      map.flyToBounds(layer.getBounds(), {
+                        padding: [40,40]
+                      })
                     });
 
                     layer.on('mouseout', function() {
@@ -280,8 +282,6 @@
                 if (superfundMarker != undefined) {
                     map.removeLayer(superfundMarker);
                 };
-
-                console.log(result.geocode.name)
 
                 var targetPoint = [result.geocode.center.lng, result.geocode.center.lat]
         
