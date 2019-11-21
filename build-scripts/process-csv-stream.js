@@ -1,3 +1,5 @@
+// process large csv file by way of streaming
+
 // import packages
 const fs = require("fs");
 const csv = require("csvtojson");

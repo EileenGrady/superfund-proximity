@@ -1,39 +1,35 @@
 # MAP675 Module 03 Collaborative Assignment
+## Mapping Proximity to Superfund Sites
 
-This repository holds an experimental assignment for collaborative data wrangling with Turf.js (and various other JS/npm packages and command line tools) within a Node environment and quick web mapping solutions for plotting the resultant data.
+### Data Sources
 
-The goal of this collaborative task is threefold:
+Primary: [GNIS Point Data](https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data)
 
-1. practice writing JS scripts to be run in Node for data processing
-2. explore ways in which a rich set of point features can be integrated with an additional dataset for geographic analysis and map production
-3. practice front-end web mapping solutions including representation of data and user interaction to support various map tasks
+Secondary: [Superfund sites](https://www.gao.gov/products/GAO-20-73)
 
-The primary shared dataset for the task will be the GNIS point data found here:
 
-https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data
+### Data Processing
 
-Students are expected to:
+First install the following npm packages used to process data
+* npm install @turf/turf
+* npm install chalk
+* npm install csvtojson
+* npm install geojson-validation
+* npm install i average
 
-1. propose additional interesting datasets to combine with or analyze against the GNIS point features (Node JS scripts encouraged but Python/Jupyter solutions also welcome)
-2. write scripts to analysis, process, and output new datasets in formats suitable for web mapping
-3. plot data on web maps
-4. share solutions with class team members
-5. offer code reviews and code comments of class team member solutions
+Run `node process-csv-stream.js` to process the GNIS point data, filtering for populated places to result in an output geojson file.
 
-Also, consult the https://github.com/newmapsplus/turf-examples repo for simple examples and ideas, created in previous iterations of this collaborative assignments.
+Run `node process-csv.js` to process Superfund site data, retaining only the site name and loation to result in an output geojson file.
 
-**Instructions**
+Run `node create-hexgrid.js` to (1) create hexgrid covering the United States, (2) find the average distance from populated places in each hexgrid to the nearest Superfund site.
 
-1. Clone repo to your local machine:
+Run `node extract-colors.js` to pull out color schemes from larger cartocolors.json for use in web map.
 
-   `git clone https://github.com/newmapsplus/map675-module-03-collab.git`
 
-2. Start a thread on the #map675 Slack Channel and share some ideas of other data sets (links) or tasks you're considering integrating with the current point data.
-3. Branch from the master. Consider naming the branch either your name or, more preferably, a name related to your project.
-4. Read about using [GitHub Project Boards](https://help.github.com/en/github/managing-your-work-on-github/about-project-boards) and create a new project on the collaborative repo for your project. Play with this tool and think about and share answers to such questions as:
-   1. How can these project boards be used to organize and collaborate on a project?
-   2. Is the "todo", "in progress", "done" structure of columns of the "basic kanban" useful? What other columns are useful for you?
-5. Play with the mapping process! Be creative and fearless. Test some ideas. Take some risks. Ask for help on Slack.
-6. Check out team members' projects and code. Offer help and advice. If you want to help explicitly, branch from their branch (not the master) edit, commit, and push back up.
+### Final Web Map!
 
-This is an experimental element of the assignment. We're here to learn together. Identify problems with the process, suggest alternatives or improvements, and most of all ... have fun.
+The web map shows the hexagrid, symbolized with a graduated color scheme using the [Leaflet Choropleth Pulgin](https://github.com/timwis/leaflet-choropleth). Darker colors indicate that populated places in that hexagon are located closer (on average) to a Superfund site than those in lighter colored hexagons.
+
+Individual Superfund sites are displayed on the map using [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster). Click a site to display its name in a popup.
+
+Use the [Leaflet Control Geocoder](https://github.com/perliedman/leaflet-control-geocoder) to search for any location. Once a location is selected, a marker is added and turf runs in the browser to find the nearest Superfund site. Use the layer control to toggle Superfund sites on and off.
