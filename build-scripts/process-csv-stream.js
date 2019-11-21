@@ -14,6 +14,7 @@ processCSV(inFilePath);
 function processCSV(filePath) {
     const readableStream = fs.createReadStream(filePath);
 
+    // define empty new geojson
     const geojson = {
         type: "FeatureCollection",
         features: []
@@ -31,6 +32,7 @@ function processCSV(filePath) {
         .subscribe((jsonObj, i) => {
             if (i % 100000 == 0) console.log("processing row #: " + chalk.blue(i));
 
+            // create feature for each csv record
             if (jsonObj.FEATURE_CLASS === filteredFeature) {
                 feature = {
                     type: "Feature",

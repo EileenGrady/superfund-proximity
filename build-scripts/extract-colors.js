@@ -17,6 +17,7 @@ function extractColors() {
 
     console.log("cartocolors.json data parsed to JSON");
 
+    // extract all color schemes I want to experiment using in the map
     const outputData = {
       'Emrld': data['Emrld'],
       'BluYl': data['BluYl'],

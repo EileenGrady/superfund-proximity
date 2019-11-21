@@ -20,28 +20,26 @@
       }
 
       #map {
-      height: 540px;
-    }
+        height: 540px;
+      }
 
       h2, h3, ul, li {
-          font-family: 'Century Gothic';
+        font-family: 'Century Gothic';
       }
 
       p {
-          font-family: 'Century Gothic';
-          font-size: 14px;
+        font-family: 'Century Gothic';
+        font-size: 14px;
       }
 
       a {
-          color: #F18772;
+        color: #F18772;
       }
 
       a:hover {
-          color: #9AC0CD;
+        color: #9AC0CD;
       }
-    
-
-
+  
       .legend {
         color: #555;
         padding: 6px 6px;
@@ -53,65 +51,62 @@
         border: 2px solid rgba(0,0,0,0.2);
         border-radius: 5px;
         width: 265px;
-	  }
+	    }
 
-    .legend p {
+      .legend p {
         color: #555;
         font-size: 12px;
         font-family: 'Century Gothic';
         margin-bottom: 6px;
-    }
+      }
 
-	  .legend ul {
+	    .legend ul {
         list-style-type: none;
         padding: 0;
         margin: 0;
         clear: both;
-	  }
+	    }
 
-	  .legend li {
+	    .legend li {
         display: inline-block;
         width: 35px;
         height: 27px;
-	  }
+	    }
 
-	  .legend .min {
+	    .legend .min {
         float: left;
         padding-bottom: 5px;
-	  }
+	    }
 
-	  .legend .max {
+	    .legend .max {
 			  float: right;
-	  }
+	    }
 
-    .leaflet-popup, .leaflet-tooltip {
-      font-family: 'Century Gothic';
-      margin: 3px 0;
-      width: 150px;
-      white-space: pre-wrap;
-      border-radius: 5px;
+      .leaflet-popup, .leaflet-tooltip {
+        font-family: 'Century Gothic';
+        margin: 3px 0;
+        width: 150px;
+        white-space: pre-wrap;
+        border-radius: 5px;
+      }
 
-    }
+      /* Small devices (landscape phones, 576px and up) */
+      @media (min-width: 576px) {}
 
-
-
-
-    /* Small devices (landscape phones, 576px and up) */
-    @media (min-width: 576px) {}
-
-    /* Medium devices (tablets, 768px and up) */
-    @media (min-width: 768px) {
+      /* Medium devices (tablets, 768px and up) */
+      @media (min-width: 768px) {
 
       aside {
         height: 540px;
       }
-    }
 
-    /* Large devices (desktops, 992px and up) */
-    @media (min-width: 992px) {}
+      /* Large devices (desktops, 992px and up) */
+      @media (min-width: 992px) {}
 
-    /* Extra large devices (large desktops, 1200px and up) */
-    @media (min-width: 1200px) {}
+      /* Extra large devices (large desktops, 1200px and up) */
+      @media (min-width: 1200px) {}
+      }
+
   </style>
 </head>
 
@@ -134,13 +129,13 @@
             processing plants, landfills and mining sites. Superfund sites are such sites that have been designated
             under the Comprehensive Environmental Response, Compensation, and Liability Act (CERCLA) of 1980 (<a href="https://www.epa.gov/superfund/what-superfund" target="_blank">EPA.gov</a>)
           </p>
-            <p>
-              This map shows Superfund sites and average distances from populated places to a Superfund site. A populated place is defined as, 
-                "any place or area with clustered or scattered buildings and a permanent human population."
-            </p>
-            <p>
-              Toggle Superfund sites on and off, or search any place in the search bar to find the closest Superfund site.
-            </p>
+          <p>
+            This map shows Superfund sites and average distances from populated places to a Superfund site. A populated place is defined as, 
+            "any place or area with clustered or scattered buildings and a permanent human population."
+          </p>
+          <p>
+            Toggle Superfund sites on and off, or search any place in the search bar to find the closest Superfund site.
+          </p>
         </section>
       </aside>
       <div class="col-12 col-md-8 col-lg-9 px-0">
@@ -152,7 +147,7 @@
         <ul class="list-unstyled">
           <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a>, November 2019</li>
           <li>Data Sources: <a href="https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
-        and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a></li>
+          and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a></li>
           <li>Superfund site icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></li></li>
         </ul>
       </div>
@@ -178,201 +173,215 @@
   <script src="libs/Leaflet.markercluster/leaflet.markercluster.js"></script>
 
 
-
   <script>
-      // create Leaflet map
-      var map = L.map("map", {
-        // zoomSnap: 0.1,
-        center: [37.46020040160267, -92.39186355005504],
-        zoom: 4.2,
-        zoomControl: false
-      });
+    // create Leaflet map
+    var map = L.map("map", {
+      // zoomSnap: 0.1,
+      center: [37.46020040160267, -92.39186355005504],
+      zoom: 4.2,
+      zoomControl: false
+    });
 
-      map.setMaxBounds(map.getBounds());
+    // add a basemap of tiles
+    L.tileLayer(
+      "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
+      {
+        maxZoom: 18,
+        attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+      }
+    ).addTo(map);
 
-      // add a basemap of tiles
-      L.tileLayer(
-        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
-        {
-          maxZoom: 18,
-          attribution:
-            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
-        }
-      ).addTo(map);
+    // add leaflet geocoder control
+    const geoCoderControl = L.Control.geocoder({
+      collapsed: false
+    }).addTo(map);
 
-      const geoCoderControl = L.Control.geocoder({
-          collapsed: false
+    // load in data
+    const hexgridData = d3.json('data/hexgrid.json');
+    const superfundData = d3.json('data/superfund-sites.json');
+    const colorData = d3.json('data/color-scheme.json');
+
+    // wait until data loads, then call function
+    Promise.all([hexgridData, superfundData, colorData]).then(dataReady)
+
+    // define function to run once data loads
+    function dataReady(data) {
+
+      // assign data to variables
+      const hexgrid = data[0];
+      const superfunds = data[1];
+      const colors = data[2];
+
+      // call drawMap function, passing data variables to pull out of function
+      drawMap(hexgrid, superfunds, colors)
+    }
+
+    function drawMap(hexgrid, superfunds, colors) {
+
+      // first draw hexgrid layer
+      // using Leaflet choropleth plugin to symbolize with graduated colors
+      const hexgridLayerGroup = L.choropleth(hexgrid, {
+        valueProperty: 'averageDistance',
+        colors: [colors.Peach[7][6], colors.Peach[7][5], colors.Peach[7][4], colors.Peach[7][3], colors.Peach[7][2], colors.Peach[7][1], colors.Peach[7][0]],
+        steps: 7,
+        mode: 'k',
+        style: {
+          color: '#4D4D4D',
+          weight: 1,
+          fillOpacity: 0.9
+        },
+
+        // only return those features that have a value
+        filter: function(feature) {
+          if (feature.properties.averageDistance) return feature;
+        },
+
+        // bind tooltip to feature and create user affordance on mouseover and click events
+        onEachFeature: function(feature, layer) {
+          // attach a tooltip to each
+          layer.bindTooltip("People in this area live an average <span style='font-weight:bold'>" + (feature.properties.averageDistance).toFixed(2) + "</span> miles from a Superfund site.", {
+            sticky: true
+          });
+          layer.on('mouseover', function() {
+            this.setStyle({
+              fillOpacity: 1,
+              weight: 1.5
+            })
+          });
+          layer.on('click', function() {
+            map.flyToBounds(layer.getBounds(), {
+              padding: [40,40]
+            })
+          });
+          layer.on('mouseout', function() {
+              this.setStyle({
+                  fillOpacity: 0.8,
+                  weight: 1
+              })
+          })
+        },
       }).addTo(map);
 
-      const hexgridData = d3.json('data/hexgrid.json');
-      const superfundData = d3.json('data/superfund-sites.json');
-      const colorData = d3.json('data/color-scheme.json');
+      // add superfund sites to map using Leaflet cluster plugin
+      // create new markerClusterGroup
+      var markers = L.markerClusterGroup();
 
-      Promise.all([hexgridData, superfundData, colorData]).then(dataReady)
+      // loop through all superfunds
+      superfunds.features.forEach(function(feature) {
+        // create a new Leaflet marker for each, using custom icon
+        var coords = feature.geometry.coordinates;
+        var superfundIcon = L.icon({
+          iconUrl: 'icons/toxic-sign.svg',
+          iconSize: [15, 15]
+        });
+        marker = L.marker([coords[1], coords[0]], {icon: superfundIcon});
+        // bind a tooltip to the marker
+        marker.bindTooltip("Superfund Site: " + feature.properties.FEATURE_NAME, {
+          sticky: true
+        });          
+        markers.addLayer(marker);
+      });
 
-      function dataReady(data) {
+      // add the markerClusterGroup to the map
+      map.addLayer(markers);
 
-        const hexgrid = data[0];
-        const superfunds = data[1];
-        const colors = data[2];
+      // create object to hold superfund layer to add to layer control
+      var layerControl = {
+        "Superfund Sites": markers
+      };
 
-        drawMap(hexgrid)
+      // create and add layer control, passing only the superfund sites to it
+      L.control.layers(null, layerControl, {
+        collapsed: false
+      }).addTo(map);
 
-        function drawMap(hexgrid, markerLocation) {
-            const hexgridLayerGroup = L.choropleth(hexgrid, {
-            valueProperty: 'averageDistance',
-            colors: [colors.Peach[7][6], colors.Peach[7][5], colors.Peach[7][4], colors.Peach[7][3], colors.Peach[7][2], colors.Peach[7][1], colors.Peach[7][0]],
-            steps: 7,
-            mode: 'k',
-            style: {
-                color: '#4D4D4D',
-                weight: 1,
-                fillOpacity: 0.9
-            },
-            filter: function(feature) {
-                    if (feature.properties.averageDistance) return feature;
-            },
-            onEachFeature: function(feature, layer) {
-                    // attach a tooltip to each
-                    layer.bindTooltip("People in this area live an average <span style='font-weight:bold'>" + (feature.properties.averageDistance).toFixed(2) + "</span> miles from a Superfund site.", {
-                      sticky: true
-                    });
-
-                    layer.on('mouseover', function() {
-                        this.setStyle({
-                            fillOpacity: 1,
-                            weight: 1.5
-                        })
-                    });
-
-                    layer.on('click', function() {
-                      map.flyToBounds(layer.getBounds(), {
-                        padding: [40,40]
-                      })
-                    });
-
-                    layer.on('mouseout', function() {
-                        this.setStyle({
-                            fillOpacity: 0.8,
-                            weight: 1
-                        })
-                    })
-                },
-            }).addTo(map);
-
-            // const superfundLayerGroup = L.geoJSON(superfunds, {
-            //   pointToLayer: function(feature, latlng) {
-            //         var superfundIcon = L.icon({
-            //             iconUrl: 'icons/toxic-sign.svg',
-            //             iconSize: [10, 10]
-            //         });
-            //         return L.marker(latlng, {icon: superfundIcon});
-            //   },
-            //   // onEachFeature: function(feature, layer) {
-            //   //       // attach a popup to each
-            //   //       layer.bindPopup(feature.properties.FEATURE_NAME, {
-            //   //         popupOffset: [75, -75]
-            //   //       });
-            //   // }
-            // }).addTo(map);
-
-            // create new markerClusterGroup
-            var markers = L.markerClusterGroup();
-
-            // loop through all superfunds
-            superfunds.features.forEach(function(feature) {
-              // create a new Leaflet marker for each
-              var coords = feature.geometry.coordinates;
-              var superfundIcon = L.icon({
-                iconUrl: 'icons/toxic-sign.svg',
-                iconSize: [15, 15]
-              });
-              marker = L.marker([coords[1], coords[0]], {icon: superfundIcon});
-              // bind a tooltip to the marker
-              marker.bindTooltip("Superfund Site: " + feature.properties.FEATURE_NAME, {
-                sticky: true
-              });          
-              markers.addLayer(marker);
-
-            });
-            // add the markerClusterGroup to the map
-            map.addLayer(markers);
-
-            var layerControl = {
-                "Superfund Sites": markers
-            };
-
-            L.control.layers(null, layerControl, {
-              collapsed: false
-            }).addTo(map);
-
-            var legend = L.control({ position: 'bottomright' })
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'info legend')
-                var limits = hexgridLayerGroup.options.limits
-                var colors = hexgridLayerGroup.options.colors
-                var labels = []
-
-                div.innerHTML = '<p>Average distance between a Superfund site and a populated place</p>'
-
-                // Add min & max
-                div.innerHTML += '<div class="labels"><div class="min">' + limits[0].toFixed(2) + ' miles</div> \
-                        <div class="max">' + limits[limits.length - 1].toFixed(2) + '</div></div>'
-
-                limits.forEach(function (limit, index) {
-                labels.push('<li style="background-color: ' + colors[index] + '"></li>')
-                })
-
-                div.innerHTML += '<ul>' + labels.join('') + '</ul>'
-                return div
-            }
-            legend.addTo(map)
-
-            var searchResult = {}
-            var superfundMarker = {}
-
-
-            var superfundMarker = {}
-
-            geoCoderControl.on('markgeocode', function(result) {
-
-                if (superfundMarker != undefined) {
-                    map.removeLayer(superfundMarker);
-                };
-
-                var targetPoint = [result.geocode.center.lng, result.geocode.center.lat]
+      // create legend
+      var legend = L.control({ position: 'bottomright' })
+      legend.onAdd = function (map) {
         
-                let nearestSuperfund = turf.nearestPoint(targetPoint, superfunds)
-
-                let options = {units: 'miles'}
-
-                let distance = turf.distance(targetPoint, nearestSuperfund, options)
-
-                superfundMarker = L.geoJson(nearestSuperfund, {
-                  pointToLayer: function(feature, latlng) {
-                    var superfundIcon = L.icon({
-                        iconUrl: 'icons/toxic-sign.svg',
-                        iconSize: [50, 50],
-                        tooltipAnchor: [25, -25]
-                    });
-                    return L.marker(latlng, {icon: superfundIcon});
-                  }
-                }).addTo(map);
-
-                superfundMarker.bindTooltip(nearestSuperfund.properties.FEATURE_NAME + " is <span style='font-weight:bold'>" + distance.toFixed(2) + "</span> miles away.", {
-                  direction: 'top'
-                }).openTooltip();
-
-
-                bounds = L.latLngBounds(superfundMarker.getBounds().extend(result.geocode.bbox))
-                map.flyToBounds(bounds, {
-                        padding: [270, 100]
-                    });
-
-            })
-        }
+        // create div element
+        var div = L.DomUtil.create('div', 'info legend')
         
+        // get limits of data values-max and min values
+        var limits = hexgridLayerGroup.options.limits
+
+        // get colors used to display hexgrid
+        var colors = hexgridLayerGroup.options.colors
+
+        // define empty array to hold the color labels
+        var labels = []
+
+        // start with legend title
+        div.innerHTML = '<p>Average distance between a Superfund site and a populated place</p>'
+
+        // Add min & max values
+        div.innerHTML += '<div class="labels"><div class="min">' + limits[0].toFixed(2) + ' miles</div> \
+                <div class="max">' + limits[limits.length - 1].toFixed(2) + '</div></div>'
+
+        // add each color symbol to labels array
+        limits.forEach(function (limit, index) {
+          labels.push('<li style="background-color: ' + colors[index] + '"></li>')
+        });
+
+        // join color symbols together
+        div.innerHTML += '<ul>' + labels.join('') + '</ul>'
+        return div
       }
+
+      legend.addTo(map)
+
+      // Leaflet geocoder plugin auto adds marker to geocode result
+      // this fires when that geocode is marked
+      // call function to find nearest superfund site to search result
+      geoCoderControl.on('markgeocode', function(result) {
+        findNearestSuperfund(superfunds, result)
+      })
+    }
+
+    // declare empty superfundMarker
+    var superfundMarker = {}
+
+    function findNearestSuperfund(superfunds, result) {
+      // if there is already a superfundMarker present, remove it from map
+      if (superfundMarker != undefined) {
+        map.removeLayer(superfundMarker);
+      };
+
+      // define target point as the search result coords
+      var targetPoint = [result.geocode.center.lng, result.geocode.center.lat]
+
+      // find nearest superfund site to that target point
+      let nearestSuperfund = turf.nearestPoint(targetPoint, superfunds)
+
+      let options = {units: 'miles'}
+
+      // then find the distance between the two in miles
+      let distance = turf.distance(targetPoint, nearestSuperfund, options)
+
+      // create custom icon marker for the nearest superfund found
+      superfundMarker = L.geoJson(nearestSuperfund, {
+        pointToLayer: function(feature, latlng) {
+          var superfundIcon = L.icon({
+            iconUrl: 'icons/toxic-sign.svg',
+            iconSize: [50, 50],
+            tooltipAnchor: [25, -25]
+          });
+          return L.marker(latlng, {icon: superfundIcon});
+        }
+      }).addTo(map);
+
+      // bind and open tooltip to marker
+      superfundMarker.bindTooltip(nearestSuperfund.properties.FEATURE_NAME + " is <span style='font-weight:bold'>" + distance.toFixed(2) + "</span> miles away from the search location.", {
+        direction: 'top'
+      }).openTooltip();
+
+      // define bounds as the bounds of search result and nearest superfund, zoom to both points
+      bounds = L.latLngBounds(superfundMarker.getBounds().extend(result.geocode.bbox))
+      map.flyToBounds(bounds, {
+        padding: [270, 100]
+      });
+    }
   </script>
 </body>
 

@@ -16,6 +16,7 @@ csv({
         jsonToGeoJson(jsonObj);
     });
 
+    // define new empty geojson
     const jsonToGeoJson = (jsonObj) => {
         const geojson = {
             type: "FeatureCollection",
@@ -26,6 +27,7 @@ csv({
     
         let featureCount = 0;
     
+        // create new feature for each csv record
         jsonObj.forEach(obj => {
             if (obj.Longitude) {
                 feature = {

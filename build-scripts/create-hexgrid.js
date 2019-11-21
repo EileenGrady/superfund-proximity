@@ -49,16 +49,25 @@ const createHexGrid = (popPlaces, superfunds) => {
     calculateNearestSite(popPlaces, superfunds, hexgrid);
 }
 
+// find nearest superfund site to each populated place
 const calculateNearestSite = (popPlaces, superfunds, hexgrid) => {
 
+    // define search points as superfunds
     let points = superfunds
 
+    // loop through each populate place
     turf.featureEach(popPlaces, popPlace => {
+
+        // first find the nearest superfund site to the populated place
         let targetPoint = popPlace.geometry.coordinates
         let nearest = turf.nearestPoint(targetPoint, points);
+
+        // then calculate the distance to it in miles
         let options = {units: 'miles'}
         let distance = turf.distance(targetPoint, nearest, options)
 
+        // add attribute to each populated place 
+        // for the name of the nearest superfund and the distance to it
         popPlace.properties = Object.assign({}, popPlace.properties, {
             nearestSuperfund: nearest.properties.Name,
             distanceTo: distance
@@ -66,11 +75,12 @@ const calculateNearestSite = (popPlaces, superfunds, hexgrid) => {
 
     })
 
+    // call next function
     collectPlaces(popPlaces, superfunds, hexgrid)
 }
 
-
-
+// count number of superfund sites in each hex 
+// and calculate average distance
 const collectPlaces = (popPlaces, superfunds, hexgrid) => {
     let options = {
         ignoreBoundary: true
@@ -79,37 +89,48 @@ const collectPlaces = (popPlaces, superfunds, hexgrid) => {
     let averageCount;
     let count;
 
+    // loop through each hex
     turf.featureEach(hexgrid, (hex, i) => {
+
+        // start these over for each hex
         averageCount = []
         count = 0
 
+        // loop through each populated place
+        // if it is in the hex, add the distance value to the average count array
         turf.featureEach(popPlaces, point => {
             if (turf.booleanPointInPolygon(point, hex, options)) {
                 averageCount.push(point.properties.distanceTo)
             }
         })
+
+        // once pop place loop completes, find average distance for all populated places in that hex
         var averageDistance = average(averageCount)
 
+        // monitor progress
         if (averageDistance > 0) {
             console.log(chalk.magenta("hex # " + i + ": " + averageDistance))
         }
 
+        // then loop through each superfunds,
+        // increase count by one if it is in hex
         turf.featureEach(superfunds, point => {
             if(turf.booleanPointInPolygon(point, hex, options)) {
                 count++
             }
         })
 
+        // monitor progress
         if (count > 0) {
             console.log(chalk.green("adding " + count + " superfunds to hex #" + i))
         }
 
+        // add new attributes the the hex for number of superfunds, and average distance
         hex.properties = Object.assign({}, hex.properties, {
             superfundCount: count,
             averageDistance: averageDistance
         });
     })
-
 
     console.log(chalk.blue("ready to write the hexgrid to file"));
     
