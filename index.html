@@ -122,7 +122,7 @@
     <section class="row">
       <aside id="about" class="col-12 col-md-4 col-lg-3 text-white py-2 bg-secondary overflow-auto">
         <section>
-          <h3>About this map</h3>
+          <h3>about this map</h3>
           <p>
             Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
             left out in the open, or otherwise improperly managed. These sites include manufacturing facilities, 
@@ -179,7 +179,8 @@
       // zoomSnap: 0.1,
       center: [37.46020040160267, -92.39186355005504],
       zoom: 4.2,
-      zoomControl: false
+      zoomControl: false,
+      minZoom: 2
     });
 
     // add a basemap of tiles
@@ -272,8 +273,8 @@
         // create a new Leaflet marker for each, using custom icon
         var coords = feature.geometry.coordinates;
         var superfundIcon = L.icon({
-          iconUrl: 'icons/toxic-sign.svg',
-          iconSize: [15, 15]
+          iconUrl: 'icons/toxic-sign-2.svg',
+          iconSize: [35, 35]
         });
         marker = L.marker([coords[1], coords[0]], {icon: superfundIcon});
         // bind a tooltip to the marker
@@ -342,11 +343,27 @@
     // declare empty superfundMarker
     var superfundMarker = {}
 
+    // declare empty line to draw between search location and closest superfund
+    var distanceLine = {}
+  
+
+    // map.on('zoomend', function() {
+    //   var zoom = map.getZoom()
+    //   console.log(zoom)
+    //   if (map.getZoom() < zoom) {
+    //     map.removeLayer(superfundMarker);
+    //   }
+    // });
+
     function findNearestSuperfund(superfunds, result) {
-      // if there is already a superfundMarker present, remove it from map
+      // if there is already a superfundMarker present, remove it and the distance line from map
       if (superfundMarker != undefined) {
         map.removeLayer(superfundMarker);
+        map.removeLayer(distanceLine);
       };
+
+      // define empty array to hold coordinates of both the search location and nearest superfund
+      var latlngs = []
 
       // define target point as the search result coords
       var targetPoint = [result.geocode.center.lng, result.geocode.center.lat]
@@ -354,18 +371,30 @@
       // find nearest superfund site to that target point
       let nearestSuperfund = turf.nearestPoint(targetPoint, superfunds)
 
+      // push coordinates of search location and nearest superfund to array
+      latlngs.push(targetPoint);
+      latlngs.push(nearestSuperfund.geometry.coordinates);
+
+      // reverse coordinate order
+      latlngs = L.GeoJSON.coordsToLatLngs(latlngs)
+
+      // draw line between search location and nearest superfund
+      distanceLine = L.polyline(latlngs, {
+        color: '#ff3814'
+      }).addTo(map);
+
       let options = {units: 'miles'}
 
       // then find the distance between the two in miles
       let distance = turf.distance(targetPoint, nearestSuperfund, options)
 
-      // create custom icon marker for the nearest superfund found
+      // create size 0 marker icon for closest superfund site found
       superfundMarker = L.geoJson(nearestSuperfund, {
         pointToLayer: function(feature, latlng) {
           var superfundIcon = L.icon({
-            iconUrl: 'icons/toxic-sign.svg',
-            iconSize: [50, 50],
-            tooltipAnchor: [25, -25]
+            iconUrl: 'icons/toxic-sign-2.svg',
+            iconSize: [0, 0],
+            tooltipAnchor: [25, -25],
           });
           return L.marker(latlng, {icon: superfundIcon});
         }
