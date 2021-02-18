@@ -21,6 +21,7 @@
     "average": "^0.1.0",
     "chalk": "^3.0.0",
     "csvtojson": "^2.0.10",
-    "geojson-validation": "^0.2.1"
+    "geojson-validation": "^0.2.1",
+    "leaflet-choropleth": "^1.1.4"
   }
 }
