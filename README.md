@@ -1,6 +1,9 @@
 # MAP675 Module 03 Collaborative Assignment
 ## Mapping Proximity to Superfund Sites
 
+This project explores how to use [Turf.js](https://turfjs.org/[) and other [npm](https://www.npmjs.com/) packages and command line tools within a [Node](https://github.com/nodejs/node) environment, and quick web mapping solutions for plotting the resultant data.
+
+
 ### Data Sources
 
 Primary: [GNIS Point Data](https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data)
@@ -32,4 +35,4 @@ The web map shows the hexagrid, symbolized with a graduated color scheme using t
 
 Individual Superfund sites are displayed on the map using [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster). Click a site to display its name in a popup.
 
-Use the [Leaflet Control Geocoder](https://github.com/perliedman/leaflet-control-geocoder) to search for any location. Once a location is selected, a marker is added and turf runs in the browser to find the nearest Superfund site. Use the layer control to toggle Superfund sites on and off.
+Use the [Leaflet Control Geocoder](https://github.com/perliedman/leaflet-control-geocoder) to search for any location. Once a location is selected, a marker is added and Turf.js runs in the browser to find the nearest Superfund site. Use the layer control to toggle Superfund sites on and off.
