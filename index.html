@@ -13,23 +13,32 @@
   <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css"> />
 
   <style>
-      body {
+      html, body {
         font-family: sans-serif;
         margin: 0;
         padding: 0;
+        height:100vh;
+      }
+
+      .container-fluid {
+        height: 100vh;
+      }
+
+      #main-content {
+        height: 100vh;
       }
 
       #map {
-        height: 540px;
+        height: 100%;
       }
 
-      h2, h3, ul, li {
+      h1, h4, ul, li {
         font-family: 'Century Gothic';
       }
 
       p {
         font-family: 'Century Gothic';
-        font-size: 14px;
+        font-size: 16px;
       }
 
       a {
@@ -90,15 +99,17 @@
         border-radius: 5px;
       }
 
+      #notes {
+        margin-top: 30px;
+        font-size: 14px;
+      }
+
       /* Small devices (landscape phones, 576px and up) */
       @media (min-width: 576px) {}
 
       /* Medium devices (tablets, 768px and up) */
       @media (min-width: 768px) {
-
-      aside {
-        height: 540px;
-      }
+      /*
 
       /* Large devices (desktops, 992px and up) */
       @media (min-width: 992px) {}
@@ -115,14 +126,14 @@
   <div class="container-fluid">
     <header class="row text-white py-3">
       <div class="col-lg">
-        <h2 class="">How close do you live to a toxic Superfund site?</h2>
+        <h1 class="">How close do you live to a toxic Superfund site?</h1>
       </div>
     </header>
 
-    <section class="row">
-      <aside id="about" class="col-12 col-md-4 col-lg-3 text-white py-2 bg-secondary overflow-auto">
+    <section class="row" id="main-content">
+      <div class="col-12 col-md-4 col-lg-3 text-white py-3 bg-secondary overflow-auto">
         <section>
-          <h3>about this map</h3>
+          <h4>about this map</h4>
           <p>
             Thousands of contaminated sites exist nationally due to hazardous waste being dumped, 
             left out in the open, or otherwise improperly managed. These sites include manufacturing facilities, 
@@ -136,22 +147,18 @@
           <p>
             Toggle Superfund sites on and off, or search any place in the search bar to find the closest Superfund site.
           </p>
+          <ul class ="list-unstyled" id="notes">
+            <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a>, November 2019</li>
+            <li>Data Sources: <a href="https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
+            and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a></li>
+            <li>Superfund site icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></li></li>
+          </ul>
         </section>
-      </aside>
+      </div>
       <div class="col-12 col-md-8 col-lg-9 px-0">
         <div id="map"></div>
       </div>
     </section>
-    <footer class="row text-white py-3">
-      <div class="col mx-2">
-        <ul class="list-unstyled">
-          <li>Map authored by <a href="https://eileengrady.github.io/" target="_blank">Eileen Grady</a>, November 2019</li>
-          <li>Data Sources: <a href="https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names/download-gnis-data" target="_blank">USGS GNIS Point Data</a>,
-          and <a href="https://www.gao.gov/products/GAO-20-73" target="_blank">Superfund Sites</a></li>
-          <li>Superfund site icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></li></li>
-        </ul>
-      </div>
-    </footer>
   </div>
 
 
@@ -177,7 +184,7 @@
     // create Leaflet map
     var map = L.map("map", {
       // zoomSnap: 0.1,
-      center: [37.46020040160267, -92.39186355005504],
+      center: [28.299866366121385, -94.86968235712287],
       zoom: 4.2,
       zoomControl: false,
       minZoom: 2
@@ -195,6 +202,7 @@
 
     // add leaflet geocoder control
     const geoCoderControl = L.Control.geocoder({
+      position: 'topleft',
       collapsed: false
     }).addTo(map);
 
@@ -292,13 +300,8 @@
         "Superfund Sites": markers
       };
 
-      // create and add layer control, passing only the superfund sites to it
-      L.control.layers(null, layerControl, {
-        collapsed: false
-      }).addTo(map);
-
       // create legend
-      var legend = L.control({ position: 'bottomright' })
+      var legend = L.control({ position: 'topright' })
       legend.onAdd = function (map) {
         
         // create div element
@@ -331,6 +334,11 @@
       }
 
       legend.addTo(map)
+
+      // create and add layer control, passing only the superfund sites to it
+      L.control.layers(null, layerControl, {
+        collapsed: false
+      }).addTo(map);
 
       // Leaflet geocoder plugin auto adds marker to geocode result
       // this fires when that geocode is marked
